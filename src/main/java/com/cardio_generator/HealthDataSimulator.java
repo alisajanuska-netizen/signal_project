@@ -25,6 +25,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * Runs and manages the health data simulation for a configurable number of
+ * patients.
+ *
+ * This class is responsible for initializing the simulator, processing
+ * command-line
+ * arguments, selecting the output strategy, creating patient identifiers, and
+ * scheduling
+ * periodic tasks for each data generator.
+ *
+ * The simulator produces different types of health measurements for every
+ * patient,
+ * such as ECG data, blood oxygen saturation, blood pressure, blood levels, and
+ * alerts.
+ * Each generated value is passed to the configured OutputStrategy.
+ */
 public class HealthDataSimulator {
 
     private static int patientCount = 50; // Default number of patients
@@ -32,6 +48,21 @@ public class HealthDataSimulator {
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
 
+    /**
+     * Starts the health data simulator.
+     *
+     * This method serves as the entry point of the application. It reads and
+     * applies
+     * command-line arguments, creates the scheduler used for periodic task
+     * execution,
+     * initializes the list of patient IDs, randomizes their order, and starts the
+     * generation of simulated health data for all patients.
+     *
+     * @param args the command-line arguments used to configure the simulator,
+     *             such as the number of patients and the output type
+     * @throws IOException if an error occurs while creating the output directory
+     *                     for file-based output
+     */
     public static void main(String[] args) throws IOException {
 
         parseArguments(args);
@@ -44,6 +75,22 @@ public class HealthDataSimulator {
         scheduleTasksForPatients(patientIds);
     }
 
+    /**
+     * Parses the command-line arguments and updates the simulator configuration.
+     *
+     * This method processes the supported options and adjusts the simulator
+     * settings
+     * accordingly. It can change the number of simulated patients, select the
+     * output
+     * strategy, or display help information.
+     *
+     * Supported output types include console output, file output, WebSocket output,
+     * and TCP output.
+     *
+     * @param args the command-line arguments provided when the application starts
+     * @throws IOException if the file output option is selected and the target
+     *                     directory cannot be created
+     */
     private static void parseArguments(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
@@ -105,6 +152,13 @@ public class HealthDataSimulator {
         }
     }
 
+    /**
+     * Prints help information for using the simulator.
+     *
+     * This method displays the supported command-line options, explains their
+     * meaning,
+     * and shows an example of how to run the simulator from the command line.
+     */
     private static void printHelp() {
         System.out.println("Usage: java HealthDataSimulator [options]");
         System.out.println("Options:");
@@ -122,6 +176,15 @@ public class HealthDataSimulator {
                 "  This command simulates data for 100 patients and sends the output to WebSocket clients connected to port 8080.");
     }
 
+    /**
+     * Creates a list of patient IDs for the simulation.
+     *
+     * The generated IDs start at 1 and continue sequentially up to the
+     * specified number of patients.
+     *
+     * @param patientCount the number of patient IDs to create
+     * @return a list containing the generated patient IDs
+     */
     private static List<Integer> initializePatientIds(int patientCount) {
         List<Integer> patientIds = new ArrayList<>();
         for (int i = 1; i <= patientCount; i++) {
@@ -130,6 +193,19 @@ public class HealthDataSimulator {
         return patientIds;
     }
 
+    /**
+     * Schedules all health data generation tasks for the given patients.
+     *
+     * For each patient, this method creates recurring tasks for different types of
+     * simulated health data, including ECG, blood oxygen saturation, blood
+     * pressure,
+     * blood levels, and alerts.
+     *
+     * Each task sends its generated data to the currently selected output strategy.
+     *
+     * @param patientIds the list of patient IDs for which generation tasks should
+     *                   be scheduled
+     */
     private static void scheduleTasksForPatients(List<Integer> patientIds) {
         ECGDataGenerator ecgDataGenerator = new ECGDataGenerator(patientCount);
         BloodSaturationDataGenerator bloodSaturationDataGenerator = new BloodSaturationDataGenerator(patientCount);
@@ -146,6 +222,19 @@ public class HealthDataSimulator {
         }
     }
 
+    /**
+     * Schedules a task to run repeatedly at a fixed rate.
+     *
+     * A small random initial delay is added before the first execution so that not
+     * all
+     * tasks start at the same moment. After that, the task runs repeatedly using
+     * the
+     * specified period and time unit.
+     *
+     * @param task     the task to execute
+     * @param period   the time interval between executions
+     * @param timeUnit the time unit of the period
+     */
     private static void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
         scheduler.scheduleAtFixedRate(task, random.nextInt(5), period, timeUnit);
     }

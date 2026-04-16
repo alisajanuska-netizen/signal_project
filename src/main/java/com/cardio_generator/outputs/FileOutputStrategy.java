@@ -7,17 +7,40 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Writes generated health measurements to files.
+ * Each measurement type is written to a separate text file in the specified
+ * directory.
+ */
+
 public class FileOutputStrategy implements OutputStrategy {
     // changed field name to camelCase
     private final String baseDirectory;
     // changed field name to camelCase and made it private
     private final ConcurrentHashMap<String, String> fileMap = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a file output strategy.
+     * 
+     * @param baseDirectory the directory where output files will be stored
+     */
     public FileOutputStrategy(String baseDirectory) {
 
         this.baseDirectory = baseDirectory;
     }
 
+    /**
+     * Writes one generated measurement to a file.
+     * The file is selected based on the measurement label.If an error occurs
+     * while creating the directory or writing to the file, it is logged and the
+     * method returns without throwing the exception further.
+     *
+     * @param patientId the unique identifier of the patient
+     * @param timestamp the time when the measurement was generated, in milliseconds
+     *                  since the Unix epoch
+     * @param label     the type of measurement, such as ECG or oxygen saturation
+     * @param data      the measurement data
+     */
     @Override
     public void output(int patientId, long timestamp, String label, String data) {
         try {
