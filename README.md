@@ -63,6 +63,30 @@ This project includes UML class diagrams for four subsystems:
 
 See the diagrams and explanations in [`uml_models`](src/uml_models)
 
+### Testing
+
+To run the unit tests:
+
+```bash
+mvn clean test
+```
+
+
+## Code Coverage
+
+Coverage report screenshot:
+`docs/coverage_report.png`
+
+
+## Unit Tests
+
+All JUnit tests pass successfully.
+
+Screenshot:
+`docs/tests_passing.png`
+
+
+
 
 ### Supported Output Options
 
