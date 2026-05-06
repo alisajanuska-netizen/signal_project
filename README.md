@@ -52,6 +52,17 @@ To run with specific options (e.g., to set the patient count and choose an outpu
 ```sh
 java -jar target/cardio_generator-1.0-SNAPSHOT.jar --patient-count 100 --output file:./output
 ```
+### UML Models
+
+This project includes UML class diagrams for four subsystems:
+
+- Alert Generation System
+- Data Storage System
+- Patient Identification System
+- Data Access Layer
+
+See the diagrams and explanations in [`uml_models`](src/uml_models)
+
 
 ### Supported Output Options
 
